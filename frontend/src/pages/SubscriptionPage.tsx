@@ -26,7 +26,8 @@ export function SubscriptionPage() {
 
   function load() {
     apiClient.get<SubscriptionPlan[]>('/subscription-plans').then(({ data }) => setPlans(data))
-    apiClient.get<Subscription>('/subscription').then(({ data }) => setCurrent(data))
+    // Laravel serializes a null model as {} - only accept a subscription that actually has a plan
+    apiClient.get<Subscription>('/subscription').then(({ data }) => setCurrent(data && data.plan ? data : null))
   }
 
   useEffect(load, [])

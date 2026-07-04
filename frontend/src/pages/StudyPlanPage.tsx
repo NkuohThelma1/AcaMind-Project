@@ -28,7 +28,8 @@ export function StudyPlanPage() {
     if (!user?.level_id) return
     apiClient
       .get<StudyPlan>('/study-plan', { params: { level_id: user.level_id } })
-      .then(({ data }) => setPlan(data))
+      // Laravel serializes a null model as {} - treat a plan without items as "no plan yet"
+      .then(({ data }) => setPlan(data && data.items ? data : null))
       .finally(() => setIsLoading(false))
     apiClient
       .get<ResourceRecommendationGroup[]>('/study-plan/recommended-resources', { params: { level_id: user.level_id } })
